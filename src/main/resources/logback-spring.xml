@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="LOGS_DIR" value="C:/ratefeed/log" />
+	<property name="SOURCE_NAME" value="ECB" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d %p %C [%t] %m%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="ROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS_DIR}/ratefeed_${SOURCE_NAME}.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d %p %C [%t] %m%n</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS_DIR}/archived/ratefeed_${SOURCE_NAME}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<logger name="org.springframework" level="OFF" additivity="false">
+		<appender-ref ref="ROLLINGFILE" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="ROLLINGFILE" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+</configuration>
