@@ -1,10 +1,7 @@
-package com.pc.globalpos.ratefeed.config;
-
-import org.springframework.beans.factory.annotation.Value;
+package com.pc.globalpos.ratefeed.model;
 
 public class ApplicationProperties {
 	
-	@Value("${ratefeed.source}")
 	private String ratefeedSource;
 
 	public String getRatefeedSource() {

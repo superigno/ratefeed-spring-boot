@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.pc.globalpos.ratefeed.Application;
 import com.pc.globalpos.ratefeed.model.Email;
 import com.pc.globalpos.ratefeed.service.EmailService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class EmailTest {
 
 	@Autowired
