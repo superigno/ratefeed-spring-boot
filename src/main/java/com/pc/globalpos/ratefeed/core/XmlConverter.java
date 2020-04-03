@@ -3,6 +3,7 @@ package com.pc.globalpos.ratefeed.core;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.transform.stream.StreamResult;
@@ -18,39 +19,26 @@ public class XmlConverter {
 
 	@Autowired
 	private Marshaller marshaller;
-	
+
 	@Autowired
 	private Unmarshaller unmarshaller;
 
-	public void convertFromObjectToXml(Object object, String filepath)
-		throws IOException {
-
-		FileOutputStream os = null;
-		try {
-			os = new FileOutputStream(filepath);
+	public void convertFromObjectToXml(Object object, String filepath) throws IOException {
+		try (FileOutputStream os = new FileOutputStream(filepath)) {
 			marshaller.marshal(object, new StreamResult(os));
-		} finally {
-			if (os != null) {
-				os.close();
-			}
 		}
 	}
 
 	public Object convertFromXmlToObject(String xmlfile) throws IOException {
-
-		FileInputStream is = null;
-		try {
-			is = new FileInputStream(xmlfile);
+		try (FileInputStream is = new FileInputStream(xmlfile)) {
 			return unmarshaller.unmarshal(new StreamSource(is));
-		} finally {
-			if (is != null) {
-				is.close();
-			}
 		}
 	}
-	
+
 	public Object convertFromXmlToObject(URL url) throws IOException {
-		return unmarshaller.unmarshal(new StreamSource(url.openStream()));
+		try (InputStream is = url.openStream()) {
+			return unmarshaller.unmarshal(new StreamSource(is));
+		}		
 	}
 
 }

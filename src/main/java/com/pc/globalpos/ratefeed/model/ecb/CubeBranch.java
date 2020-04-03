@@ -10,13 +10,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Cube")
 @XmlAccessorType(XmlAccessType.NONE)
-public class EcbFeed {
+public class CubeBranch {
 	
 	@XmlAttribute(name="time")
 	private String time;
 	
 	@XmlElement(name="Cube")
-	private List<EcbFeedDetail> detailList;
+	private List<CubeDetail> detailList;
 	
 	public String getTime() {
 		return time;
@@ -24,10 +24,10 @@ public class EcbFeed {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public List<EcbFeedDetail> getDetailList() {
+	public List<CubeDetail> getDetailList() {
 		return detailList;
 	}
-	public void setDetailList(List<EcbFeedDetail> detailList) {
+	public void setDetailList(List<CubeDetail> detailList) {
 		this.detailList = detailList;
 	}
 	

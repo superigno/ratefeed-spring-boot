@@ -16,7 +16,7 @@ public class Envelope {
 	private Sender sender;
 	
 	@XmlElement(name="Cube")
-	private EcbRoot root;
+	private CubeRoot cubeRoot;
 
 	public String getSubject() {
 		return subject;
@@ -34,12 +34,12 @@ public class Envelope {
 		this.sender = sender;
 	}
 
-	public EcbRoot getRoot() {
-		return root;
+	public CubeRoot getCubeRoot() {
+		return cubeRoot;
 	}
 
-	public void setRoot(EcbRoot root) {
-		this.root = root;
-	}
+	public void setCubeRoot(CubeRoot cubeRoot) {
+		this.cubeRoot = cubeRoot;
+	}	
 
 }

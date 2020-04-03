@@ -9,17 +9,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="Cube")
 @XmlAccessorType(XmlAccessType.NONE)
-public class EcbRoot {
+public class CubeRoot {
 	
 	@XmlElement(name="Cube")
-	private List<EcbFeed> feedList;
+	private List<CubeBranch> cubeBranchList;
 
-	public List<EcbFeed> getFeedList() {
-		return feedList;
+	public List<CubeBranch> getCubeBranchList() {
+		return cubeBranchList;
 	}
 
-	public void setFeedList(List<EcbFeed> feedList) {
-		this.feedList = feedList;
+	public void setCubeBranchList(List<CubeBranch> cubeBranchList) {
+		this.cubeBranchList = cubeBranchList;
 	}	
 
 }

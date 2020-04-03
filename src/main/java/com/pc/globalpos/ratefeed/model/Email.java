@@ -7,9 +7,6 @@ public class Email {
 	private String subject;
 	private String messageText;
 
-	public Email() {
-	}
-
 	public String getFrom() {
 		return from;
 	}

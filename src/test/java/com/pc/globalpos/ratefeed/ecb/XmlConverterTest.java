@@ -14,65 +14,67 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.pc.globalpos.ratefeed.Application;
 import com.pc.globalpos.ratefeed.core.XmlConverter;
-import com.pc.globalpos.ratefeed.model.ecb.EcbFeed;
-import com.pc.globalpos.ratefeed.model.ecb.EcbFeedDetail;
-import com.pc.globalpos.ratefeed.model.ecb.EcbRoot;
+import com.pc.globalpos.ratefeed.model.ApplicationProperties;
+import com.pc.globalpos.ratefeed.model.ecb.CubeBranch;
+import com.pc.globalpos.ratefeed.model.ecb.CubeDetail;
+import com.pc.globalpos.ratefeed.model.ecb.CubeRoot;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.model.ecb.Sender;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
 public class XmlConverterTest {
 
-	private static final String XML_FILE = Paths.get("C:\\ratefeed\\ecb.xml").toString();
-	private static final String XML_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
-
+	private static final String XML_FILE = Paths.get("C:","ratefeed","ecb.xml").toString();
+	
 	@Autowired
 	private XmlConverter converter;
+	
+	@Autowired
+	private ApplicationProperties props;
 
-    //@Test
+    @Test
 	public void testMarshall() throws IOException {
-
-		Envelope envelope = new Envelope();
+    	
+    	Envelope envelope = new Envelope();
 		envelope.setSubject("Reference rates");
 		Sender sender = new Sender();
 		sender.setName("European Central Bank");
 		envelope.setSender(sender);
-		EcbRoot root = new EcbRoot();
-		EcbFeed feed = new EcbFeed();
-		EcbFeedDetail detail = new EcbFeedDetail();
+		CubeRoot root = new CubeRoot();
+		CubeBranch branch = new CubeBranch();
+		CubeDetail detail = new CubeDetail();
 		detail.setCurrency("USD");
 		detail.setRate("1.0981");
-		List<EcbFeedDetail> detailList = new ArrayList<>();
+		List<CubeDetail> detailList = new ArrayList<>();
 		detailList.add(detail);
 
-		feed.setTime("2020-03-26");
-		feed.setDetailList(detailList);
+		branch.setTime("2020-03-26");
+		branch.setDetailList(detailList);
 
-		List<EcbFeed> feedList = new ArrayList<>();
-		feedList.add(feed);
-		root.setFeedList(feedList);
-		envelope.setRoot(root);
+		List<CubeBranch> branchList = new ArrayList<>();
+		branchList.add(branch);
+		root.setCubeBranchList(branchList);
+		envelope.setCubeRoot(root);
 
 		converter.convertFromObjectToXml(envelope, XML_FILE);
 	}
 
-   @Test
+    //@Test
 	public void testUnmarshall() throws IOException {
 
-		URL url = new URL(XML_URL);
+		URL url = new URL(props.getRatefeedUrl());
 		Envelope envelope = (Envelope) converter.convertFromXmlToObject(url);
-		EcbRoot root = (EcbRoot) envelope.getRoot();
-		List<EcbFeed> feedList = root.getFeedList();
+		CubeRoot root = (CubeRoot) envelope.getCubeRoot();
+		List<CubeBranch> branchList = root.getCubeBranchList();
 
-		for (EcbFeed feed : feedList) {
+		for (CubeBranch branch : branchList) {
 
-			System.out.println("Time: " + feed.getTime());
-			List<EcbFeedDetail> detailList = feed.getDetailList();
+			System.out.println("Time: " + branch.getTime());
+			List<CubeDetail> detailList = branch.getDetailList();
 
-			for (EcbFeedDetail detail : detailList) {
+			for (CubeDetail detail : detailList) {
 				System.out.println("Currency: " + detail.getCurrency());
 				System.out.println("Rate: " + detail.getRate());
 				assertNotNull(detail.getCurrency());

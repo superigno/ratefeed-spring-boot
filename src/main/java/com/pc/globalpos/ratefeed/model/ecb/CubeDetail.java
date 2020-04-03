@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="Cube")
 @XmlAccessorType(XmlAccessType.NONE)
-public class EcbFeedDetail {
+public class CubeDetail {
 	
 	@XmlAttribute(name="currency")
 	private String currency;
