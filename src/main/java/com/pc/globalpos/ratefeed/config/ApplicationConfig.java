@@ -33,7 +33,8 @@ public class ApplicationConfig {
 	@Bean
     public ApplicationProperties loadApplicationProperties() {
     	ApplicationProperties props = new ApplicationProperties();
-    	props.setRatefeedSource(env.getRequiredProperty("ratefeed.source"));
+    	props.setRatefeedSource(env.getRequiredProperty("ratefeed.source.name"));
+    	props.setRatefeedUrl(env.getRequiredProperty("ratefeed.source.url"));
     	return props;
     }
 }
