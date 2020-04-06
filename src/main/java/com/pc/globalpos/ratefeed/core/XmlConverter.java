@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.transform.stream.StreamResult;
@@ -23,22 +24,25 @@ public class XmlConverter {
 	@Autowired
 	private Unmarshaller unmarshaller;
 
-	public void convertFromObjectToXml(Object object, String filepath) throws IOException {
+	public void convertFromObjectToXml(final Object object, final String filepath) throws IOException {
 		try (FileOutputStream os = new FileOutputStream(filepath)) {
 			marshaller.marshal(object, new StreamResult(os));
 		}
 	}
 
-	public Object convertFromXmlToObject(String xmlfile) throws IOException {
-		try (FileInputStream is = new FileInputStream(xmlfile)) {
-			return unmarshaller.unmarshal(new StreamSource(is));
+	public Object convertFromXmlToObject(final String address) throws IOException {
+		URL url = null;
+		try {
+			url = new URL(address);
+			try (InputStream is = url.openStream()) {
+				return unmarshaller.unmarshal(new StreamSource(is));
+			} 
+		} catch (MalformedURLException e) {
+			try (FileInputStream is = new FileInputStream(address)) {
+				return unmarshaller.unmarshal(new StreamSource(is));
+			}
 		}
-	}
-
-	public Object convertFromXmlToObject(URL url) throws IOException {
-		try (InputStream is = url.openStream()) {
-			return unmarshaller.unmarshal(new StreamSource(is));
-		}		
+		
 	}
 
 }

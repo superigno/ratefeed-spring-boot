@@ -3,7 +3,7 @@ package com.pc.globalpos.ratefeed.model;
 public class Email {
 
 	private String from;
-	private String to;
+	private String[] to;
 	private String subject;
 	private String messageText;
 
@@ -15,11 +15,11 @@ public class Email {
 		this.from = from;
 	}
 
-	public String getTo() {
+	public String[] getTo() {
 		return to;
 	}
 
-	public void setTo(String to) {
+	public void setTo(String... to) {
 		this.to = to;
 	}
 

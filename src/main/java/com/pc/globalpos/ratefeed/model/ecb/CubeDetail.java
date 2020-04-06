@@ -1,5 +1,7 @@
 package com.pc.globalpos.ratefeed.model.ecb;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -13,7 +15,7 @@ public class CubeDetail {
 	private String currency;
 	
 	@XmlAttribute(name="rate")
-	private String rate;
+	private BigDecimal rate;
 	
 	public String getCurrency() {
 		return currency;
@@ -21,11 +23,11 @@ public class CubeDetail {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	public String getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
-	public void setRate(String rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
-	}			
+	}				
 
 }

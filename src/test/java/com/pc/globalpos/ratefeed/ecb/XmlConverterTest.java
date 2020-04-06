@@ -3,7 +3,7 @@ package com.pc.globalpos.ratefeed.ecb;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URL;
+import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class XmlConverterTest {
 		CubeBranch branch = new CubeBranch();
 		CubeDetail detail = new CubeDetail();
 		detail.setCurrency("USD");
-		detail.setRate("1.0981");
+		detail.setRate(new BigDecimal("1.0981"));
 		List<CubeDetail> detailList = new ArrayList<>();
 		detailList.add(detail);
 
@@ -64,8 +64,7 @@ public class XmlConverterTest {
     //@Test
 	public void testUnmarshall() throws IOException {
 
-		URL url = new URL(props.getRatefeedUrl());
-		Envelope envelope = (Envelope) converter.convertFromXmlToObject(url);
+		Envelope envelope = (Envelope) converter.convertFromXmlToObject(props.getSourceUrl());
 		CubeRoot root = (CubeRoot) envelope.getCubeRoot();
 		List<CubeBranch> branchList = root.getCubeBranchList();
 

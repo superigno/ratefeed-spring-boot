@@ -8,6 +8,12 @@ import java.nio.file.StandardOpenOption;
 public class FileUtils {
 	
 	public static void writeStringToFile(String string, Path path) throws IOException {
+		Path parentDir = path.getParent();
+		
+		if (!Files.exists(parentDir)) {
+			Files.createDirectories(parentDir);
+		}
+		
 		Files.write(path, string.getBytes(), StandardOpenOption.CREATE);
 	}
 
