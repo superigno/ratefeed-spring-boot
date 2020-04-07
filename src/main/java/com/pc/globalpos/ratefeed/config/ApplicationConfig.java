@@ -19,17 +19,17 @@ import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 
 @Configuration
 public class ApplicationConfig {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
-	
+
 	@Autowired
-    private Environment env;
-	
+	private Environment env;
+
 	@Bean
 	public Jaxb2Marshaller getMarshallerUnmarshaller() {
-		Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+		final Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
 		jaxb2Marshaller.setPackagesToScan("com.pc.globalpos.ratefeed.model");
-		Map<String, Object> map = new HashMap<String, Object>();
+		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		map.put(Marshaller.JAXB_ENCODING, "UTF-8");
 		jaxb2Marshaller.setMarshallerProperties(map);
@@ -37,28 +37,36 @@ public class ApplicationConfig {
 	}
 	
 	@Bean
-    public ApplicationProperties loadApplicationProperties() {
-    	ApplicationProperties props = new ApplicationProperties();
-    	props.setSourceName(env.getRequiredProperty("ratefeed.source.name"));
-    	props.setSourceUrl(env.getRequiredProperty("ratefeed.source.url"));
-    	props.setSourceType(env.getRequiredProperty("ratefeed.source.type"));
-    	props.setOutputDir(env.getRequiredProperty("ratefeed.dir.output"));
-    	props.setFilename(getFilename());
-    	props.setBaseCurrency(env.getRequiredProperty("ratefeed.currency.basecurrency"));
-    	return props;
-    }
-	
+	public ApplicationProperties loadApplicationProperties() {
+		final ApplicationProperties props = new ApplicationProperties.Builder()
+				.setMailFrom(env.getRequiredProperty("ratefeed.mail.from"))
+				.setMailTo(env.getRequiredProperty("ratefeed.mail.to"))
+				.setBaseDir(env.getRequiredProperty("ratefeed.dir.base"))
+				.setOutputDir(env.getRequiredProperty("ratefeed.dir.output"))
+				.setSourceName(env.getRequiredProperty("ratefeed.source.name"))
+				.setSourceType(env.getRequiredProperty("ratefeed.source.type"))
+				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url"))
+				.setFilename(getFilename())
+				.setRunTimeIntervalInMinute(env.getRequiredProperty("ratefeed.config.runtime.intervalinminute", Integer.class))
+				.setRetryLimit(env.getRequiredProperty("ratefeed.config.retry.limit", Integer.class))
+				.setRetryIntervalInMinute(env.getRequiredProperty("ratefeed.config.retry.intervalinminute", Integer.class))
+				.setBaseCurrency(env.getRequiredProperty("ratefeed.currency.basecurrency"))
+				.build();
+		
+		return props;
+	}
+
 	private String getFilename() {
-		String filename = env.getRequiredProperty("ratefeed.format.filename");
-		String filenameDateFormat = env.getRequiredProperty("ratefeed.format.filename.date");
+		final String filename = env.getRequiredProperty("ratefeed.format.filename");
+		final String filenameDateFormat = env.getRequiredProperty("ratefeed.format.filename.date");
 		String strDate = null;
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(filenameDateFormat);
+			final SimpleDateFormat sdf = new SimpleDateFormat(filenameDateFormat);
 			strDate = sdf.format(new Date());
 		} catch (Exception e) {
 			logger.debug("Invalid date format: {}", filenameDateFormat);
 			return filename;
 		}
-		return filename.replace(filenameDateFormat, strDate);		
+		return filename.replace(filenameDateFormat, strDate);
 	}
 }

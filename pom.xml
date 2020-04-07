@@ -7,7 +7,7 @@
 	<artifactId>pc-rate-feed</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<name>pc-rate-feed</name>
+	<name>pc-ratefeed</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -54,12 +54,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
 		</dependency>
-				
+
+		<!-- For Retry -->
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+		</dependency>
+		<!-- End For Retry -->
+
 	</dependencies>
 
 </project>

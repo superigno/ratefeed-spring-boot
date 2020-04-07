@@ -5,11 +5,12 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,6 +26,7 @@ import com.pc.globalpos.ratefeed.util.FileUtils;
 @Component
 public class EcbImpl implements RateSource<Envelope> {
 	
+	private static final Logger logger = LoggerFactory.getLogger(EcbImpl.class);
 	private Envelope feed;	
 	private String formattedFeed;
 	
@@ -37,13 +39,15 @@ public class EcbImpl implements RateSource<Envelope> {
 	
 	@Override
 	public Envelope getFeed(final String url) throws IOException {
+		logger.info("Retrieving feed from: {}", url);
 		feed = (Envelope) converter.convertFromXmlToObject(url);
+		logger.info("Done");
 		return feed;
 	}
 
 	@Override
 	public void parse() throws IOException {
-		
+		logger.info("Parsing feed...");
 		final String baseCurrency = props.getBaseCurrency();
 		final String sourceName = props.getSourceName();
 		final String sourceType = props.getSourceType();
@@ -70,13 +74,14 @@ public class EcbImpl implements RateSource<Envelope> {
 		}
 
 		formattedFeed = sb.toString();
+		logger.info("Done");
 	}
 
 	@Override
 	public void saveToFile(final Path path) throws IOException {
-		final String outputDir = props.getOutputDir();
-		final String filename = props.getFilename();		
-		FileUtils.writeStringToFile(formattedFeed, Paths.get(outputDir).resolve(filename));
+		logger.info("Saving to file: {}", path.toString());
+		FileUtils.writeStringToFile(formattedFeed, path);
+		logger.info("Done");
 	}
 
 }

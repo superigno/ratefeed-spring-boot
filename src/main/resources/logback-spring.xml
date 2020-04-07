@@ -24,15 +24,29 @@
 			</timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
 	</appender>
+	
+	<appender name="ROLLINGFILE_FULL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS_DIR}/ratefeed_${SOURCE_NAME}_full.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d %p %C [%t] %m%n</Pattern>
+		</encoder>
 
-	<logger name="org.springframework" level="OFF" additivity="false">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS_DIR}/archived/ratefeed_${SOURCE_NAME}_full-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<logger name="com.pc" level="DEBUG" additivity="true">
 		<appender-ref ref="ROLLINGFILE" />
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="CONSOLE" />		
 	</logger>
 
 	<root level="DEBUG">
-		<appender-ref ref="ROLLINGFILE" />
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLINGFILE_FULL"/>
 	</root>
 
 </configuration>
