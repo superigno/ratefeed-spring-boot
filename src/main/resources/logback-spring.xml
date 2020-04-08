@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
-	<property name="LOGS_DIR" value="C:/ratefeed/log" />
-	<property name="SOURCE_NAME" value="ECB" />
-
+	
+	<springProperty scope="context" name="LOGS_DIR" source="ratefeed.dir.logging"/>
+	<springProperty scope="context" name="SOURCE_NAME" source="ratefeed.source.name"/>
+	
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>DEBUG</level>
+	    </filter>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>%d %p %C [%t] %m%n</Pattern>
 		</layout>
 	</appender>
 
 	<appender name="ROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>DEBUG</level>
+	    </filter>
 		<file>${LOGS_DIR}/ratefeed_${SOURCE_NAME}.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d %p %C [%t] %m%n</Pattern>
@@ -40,12 +46,13 @@
 		</rollingPolicy>
 	</appender>
 
-	<logger name="com.pc" level="DEBUG" additivity="true">
+	<!-- If not set to TRACE, logger level of "com.pc" with TRACE will not be printed to ROLLINGFILE_FULL -->
+	<logger name="com.pc" level="TRACE" additivity="true">
 		<appender-ref ref="ROLLINGFILE" />
 		<appender-ref ref="CONSOLE" />		
 	</logger>
 
-	<root level="DEBUG">
+	<root level="TRACE">
 		<appender-ref ref="ROLLINGFILE_FULL"/>
 	</root>
 

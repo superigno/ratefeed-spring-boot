@@ -36,32 +36,34 @@ public class EcbRateFeed {
 	@Retryable(value = {
 			Exception.class }, maxAttemptsExpression = "#{@loadApplicationProperties.getRetryLimit() + 1}", backoff = @Backoff(delayExpression = "#{@loadApplicationProperties.getRetryIntervalInMinute() * 60000}"))
 	public void initialize() throws Exception {
+		
 		try {
 			rateSource.getFeed(props.getSourceUrl());
 			rateSource.parse();
 			rateSource.saveToFile(Paths.get(props.getOutputDir()).resolve(props.getFilename()));
 		} catch (Exception e) {
-			logger.error("Error in getting rate feed: ", e);
+			logger.trace("Error in getting rate feed: ", e);
 			if (retryCtr < props.getRetryLimit()) {
 				final String msg = String.format("Unable to get rate feed. Retrying %d/%d in %d minute(s)", ++retryCtr,
 						props.getRetryLimit(), props.getRetryIntervalInMinute());
-				logger.info(msg);
-				sendEmailInNewThread("Get ECB Rate Feed Error", msg);
+				logger.error(msg);
+				sendEmailInNewThread(msg);
 			}
 			throw e;
 		}
+		
 	}
 
 	@Recover
 	private void fallback() {
 		final String msg = String.format("Failed to get rate feed from %s after %d retries", props.getSourceUrl(),
 				props.getRetryLimit());
-		logger.info(msg);
+		logger.error(msg);
 		retryCtr = 0;
-		sendEmailInNewThread("Get ECB Rate Feed Error", msg);
+		sendEmailInNewThread(msg);
 	}
 
-	private void sendEmailInNewThread(String subject, String message) {
+	private void sendEmailInNewThread(String message) {
 		new Thread() {
 			public void run() {
 				try {
@@ -69,12 +71,13 @@ public class EcbRateFeed {
 					Email email = new Email();
 					email.setFrom(props.getMailFrom());
 					email.setTo(props.getMailTo().split(","));
-					email.setSubject(subject);
+					email.setSubject(props.getMailSubject());
 					email.setMessageText(message);
 					emailService.sendMail(email);
 					logger.info("Email sent");
 				} catch (Exception e) {
-					logger.error("Error in sending email: ", e);
+					logger.trace("Error in sending email: ", e);
+					logger.error("Error in sending email");
 				}
 			}
 		}.start();

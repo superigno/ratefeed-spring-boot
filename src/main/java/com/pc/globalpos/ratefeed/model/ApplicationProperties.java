@@ -4,6 +4,7 @@ public final class ApplicationProperties {
 
 	private final String mailFrom;
 	private final String mailTo;
+	private final String mailSubject;
 
 	private final String baseDir;
 	private final String outputDir;
@@ -21,11 +22,12 @@ public final class ApplicationProperties {
 
 	private final String baseCurrency;
 
-	private ApplicationProperties(String mailFrom, String mailTo, String baseDir, String outputDir, String sourceName,
+	private ApplicationProperties(String mailFrom, String mailTo, String mailSubject, String baseDir, String outputDir, String sourceName,
 			String sourceUrl, String sourceType, String filename, int runTimeIntervalInMinute,
 			int retryLimit, int retryIntervalInMinute, String baseCurrency) {
 		this.mailFrom = mailFrom;
 		this.mailTo = mailTo;
+		this.mailSubject = mailSubject;
 		this.baseDir = baseDir;
 		this.outputDir = outputDir;
 		this.sourceName = sourceName;
@@ -44,6 +46,10 @@ public final class ApplicationProperties {
 
 	public String getMailTo() {
 		return mailTo;
+	}
+	
+	public String getMailSubject() {
+		return mailSubject;
 	}
 
 	public String getBaseDir() {
@@ -89,6 +95,7 @@ public final class ApplicationProperties {
 	public static class Builder {
 		private String mailFrom;
 		private String mailTo;
+		private String mailSubject;
 
 		private String baseDir;
 		private String outputDir;
@@ -113,6 +120,11 @@ public final class ApplicationProperties {
 
 		public Builder setMailTo(String mailTo) {
 			this.mailTo = mailTo;
+			return this;
+		}
+		
+		public Builder setMailSubject(String mailSubject) {
+			this.mailSubject = mailSubject;
 			return this;
 		}
 
@@ -167,7 +179,7 @@ public final class ApplicationProperties {
 		}
 
 		public ApplicationProperties build() {
-			return new ApplicationProperties(mailFrom, mailTo, baseDir, outputDir, sourceName, sourceUrl, sourceType,
+			return new ApplicationProperties(mailFrom, mailTo, mailSubject, baseDir, outputDir, sourceName, sourceUrl, sourceType,
 					filename, runTimeIntervalInMinute, retryLimit, retryIntervalInMinute, baseCurrency);
 		}
 

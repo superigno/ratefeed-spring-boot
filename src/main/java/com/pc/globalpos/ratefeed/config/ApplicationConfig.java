@@ -41,6 +41,7 @@ public class ApplicationConfig {
 		final ApplicationProperties props = new ApplicationProperties.Builder()
 				.setMailFrom(env.getRequiredProperty("ratefeed.mail.from"))
 				.setMailTo(env.getRequiredProperty("ratefeed.mail.to"))
+				.setMailSubject(env.getRequiredProperty("ratefeed.mail.subject"))
 				.setBaseDir(env.getRequiredProperty("ratefeed.dir.base"))
 				.setOutputDir(env.getRequiredProperty("ratefeed.dir.output"))
 				.setSourceName(env.getRequiredProperty("ratefeed.source.name"))
