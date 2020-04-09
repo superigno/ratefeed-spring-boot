@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.bind.Marshaller;
 
@@ -13,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
+import com.pc.globalpos.ratefeed.util.EncryptDecryptUtils;
 
 /**
  * @author gino.q
@@ -51,7 +55,8 @@ public class ApplicationConfig {
 				.setOutputDirs(env.getRequiredProperty("ratefeed.dir.output").split(","))
 				.setSourceName(env.getRequiredProperty("ratefeed.source.name"))
 				.setSourceType(env.getRequiredProperty("ratefeed.source.type"))
-				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url")).setFilename(getFilename())
+				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url"))
+				.setFilenameFormat(env.getRequiredProperty("ratefeed.format.filename"))
 				.setRunTimeIntervalInMinute(
 						env.getRequiredProperty("ratefeed.config.runtime.intervalinminute", Integer.class))
 				.setRetryLimit(env.getRequiredProperty("ratefeed.config.retry.limit", Integer.class))
@@ -62,14 +67,36 @@ public class ApplicationConfig {
 		return props;
 	}
 
-	private String getFilename() {
-		String filename = env.getRequiredProperty("ratefeed.format.filename");
+	public static String getFilename(String filenameWithDateFormat) {
 		try {
-			final SimpleDateFormat sdf = new SimpleDateFormat(filename);
-			filename = sdf.format(new Date());
+			final SimpleDateFormat sdf = new SimpleDateFormat(filenameWithDateFormat);
+			filenameWithDateFormat = sdf.format(new Date());
 		} catch (Exception e) {
-			logger.debug("Invalid filename date format: {}", filename);			
+			logger.debug("Invalid filename date format: {}", filenameWithDateFormat);
 		}
-		return filename;
+		return filenameWithDateFormat;
+	}
+
+	@Bean
+	public JavaMailSender javaMailSender() {
+		final String host = env.getRequiredProperty("ratefeed.mail.host");
+		final String port = env.getRequiredProperty("ratefeed.mail.port");
+		final String username = env.getRequiredProperty("ratefeed.mail.username");
+		final String password = EncryptDecryptUtils.decrypt(env.getRequiredProperty("ratefeed.mail.password"));
+		final JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+		javaMailSender.setHost(host);
+		javaMailSender.setPort(Integer.parseInt(port));
+		javaMailSender.setUsername(username);
+		javaMailSender.setPassword(password);
+		javaMailSender.setJavaMailProperties(getMailProperties());
+		return javaMailSender;
+	}
+
+	private Properties getMailProperties() {
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.auth", env.getRequiredProperty("ratefeed.mail.properties.mail.smtp.auth"));
+		properties.setProperty("mail.smtp.starttls.enable",
+				env.getRequiredProperty("ratefeed.mail.properties.mail.smtp.starttls.enable"));
+		return properties;
 	}
 }

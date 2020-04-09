@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.pc.globalpos.ratefeed.config.ApplicationConfig;
 import com.pc.globalpos.ratefeed.main.EcbRateFeed;
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
@@ -57,7 +58,7 @@ public class EcbServiceImplTest {
 		String[] outputDirs = props.getOutputDirs();	
 		for (String outputDir : outputDirs) {
 			System.out.println(outputDir.trim());
-			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(props.getFilename()));
+			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(ApplicationConfig.getFilename(props.getFilenameFormat())));
 		}
 	}
 	

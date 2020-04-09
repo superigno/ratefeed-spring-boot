@@ -12,6 +12,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.pc.globalpos.ratefeed.config.ApplicationConfig;
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 import com.pc.globalpos.ratefeed.model.Email;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
@@ -67,7 +68,7 @@ public class EcbRateFeed {
 	private void saveToOutputDirectories(final String strFeed) throws IOException {
 		final String[] outputDirs = props.getOutputDirs();	
 		for (String outputDir : outputDirs) {
-			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(props.getFilename()));			
+			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(ApplicationConfig.getFilename(props.getFilenameFormat())));			
 		}
 	}
 	

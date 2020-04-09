@@ -18,7 +18,7 @@ public final class ApplicationProperties {
 	private final String sourceUrl;
 	private final String sourceType;
 
-	private final String filename;
+	private final String filenameFormat;
 
 	private final int runTimeIntervalInMinute;
 
@@ -28,7 +28,7 @@ public final class ApplicationProperties {
 	private final String baseCurrency;
 
 	private ApplicationProperties(String mailFrom, String mailTo, String mailSubject, String baseDir, String[] outputDirs, String sourceName,
-			String sourceUrl, String sourceType, String filename, int runTimeIntervalInMinute,
+			String sourceUrl, String sourceType, String filenameFormat, int runTimeIntervalInMinute,
 			int retryLimit, int retryIntervalInMinute, String baseCurrency) {
 		this.mailFrom = mailFrom;
 		this.mailTo = mailTo;
@@ -38,7 +38,7 @@ public final class ApplicationProperties {
 		this.sourceName = sourceName;
 		this.sourceUrl = sourceUrl;
 		this.sourceType = sourceType;
-		this.filename = filename;
+		this.filenameFormat = filenameFormat;
 		this.runTimeIntervalInMinute = runTimeIntervalInMinute;
 		this.retryLimit = retryLimit;
 		this.retryIntervalInMinute = retryIntervalInMinute;
@@ -77,8 +77,8 @@ public final class ApplicationProperties {
 		return sourceType;
 	}
 
-	public String getFilename() {
-		return filename;
+	public String getFilenameFormat() {
+		return filenameFormat;
 	}
 
 	public int getRunTimeIntervalInMinute() {
@@ -109,7 +109,7 @@ public final class ApplicationProperties {
 		private String sourceUrl;
 		private String sourceType;
 
-		private String filename;
+		private String filenameFormat;
 
 		private int runTimeIntervalInMinute;
 
@@ -157,9 +157,9 @@ public final class ApplicationProperties {
 			this.sourceType = sourceType;
 			return this;
 		}
-
-		public Builder setFilename(String filename) {
-			this.filename = filename;
+		
+		public Builder setFilenameFormat(String filenameFormat) {
+			this.filenameFormat = filenameFormat;
 			return this;
 		}
 
@@ -185,7 +185,7 @@ public final class ApplicationProperties {
 
 		public ApplicationProperties build() {
 			return new ApplicationProperties(mailFrom, mailTo, mailSubject, baseDir, outputDirs, sourceName, sourceUrl, sourceType,
-					filename, runTimeIntervalInMinute, retryLimit, retryIntervalInMinute, baseCurrency);
+					 filenameFormat, runTimeIntervalInMinute, retryLimit, retryIntervalInMinute, baseCurrency);
 		}
 
 	}

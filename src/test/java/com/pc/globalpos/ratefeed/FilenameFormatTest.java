@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.pc.globalpos.ratefeed.config.ApplicationConfig;
 import com.pc.globalpos.ratefeed.main.EcbRateFeed;
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 
@@ -29,6 +30,6 @@ public class FilenameFormatTest {
 
 	@Test
 	public void test() {
-        System.out.println("Filename: "+props.getFilename());        
+        System.out.println("Filename: "+ApplicationConfig.getFilename(props.getFilenameFormat()));        
 	}
 }
