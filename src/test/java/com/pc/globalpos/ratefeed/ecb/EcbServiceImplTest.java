@@ -2,6 +2,7 @@ package com.pc.globalpos.ratefeed.ecb;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -13,14 +14,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.source.RateSource;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("dev")
 public class EcbServiceImplTest {
 	
 	@Autowired
@@ -29,28 +37,26 @@ public class EcbServiceImplTest {
 	@Autowired
 	private RateSource<Envelope> rateSource;
 	
-	private Envelope envelope;
-	
-	//@Test
+	@Test
 	public void testGetFeed() throws IOException {
-		envelope = (Envelope) rateSource.getFeed(props.getSourceUrl());
+		Envelope envelope = (Envelope) rateSource.getFeed(props.getSourceUrl());
 		int detailsSize = envelope.getCubeRoot().getCubeBranchList().get(0).getDetailList().size();
 		assertNotNull(envelope);
-		assertEquals(32, detailsSize);
+		assertTrue(detailsSize > 0);
 	}
 	
 	@Test
 	public void testSaveFeed() throws IOException {
-		rateSource.getFeed(props.getSourceUrl());
-		rateSource.parse();
-		rateSource.saveToFile(Paths.get(props.getOutputDir(), props.getFilename()));
+		Envelope feed = rateSource.getFeed(props.getSourceUrl());
+		String strFeed = rateSource.parse(feed);
+		rateSource.saveToFile(strFeed, Paths.get(props.getOutputDir(), props.getFilename()));
 	}
 	
 	@Test
 	public void testDivide() {
 		MathContext precision = new MathContext(8, RoundingMode.DOWN);
 		BigDecimal divRate = new BigDecimal("1").divide(new BigDecimal("3.6725"), precision);
-		System.out.println("DIV RATE: "+divRate);
+		assertEquals("0.27229407", divRate.toString());
 	}
 
 }

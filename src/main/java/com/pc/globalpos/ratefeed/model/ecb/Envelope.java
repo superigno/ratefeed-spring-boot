@@ -5,6 +5,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @XmlRootElement(name="Envelope", namespace="http://www.gesmes.org/xml/2002-08-01")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Envelope {

@@ -1,5 +1,10 @@
 package com.pc.globalpos.ratefeed.model;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 public final class ApplicationProperties {
 
 	private final String mailFrom;

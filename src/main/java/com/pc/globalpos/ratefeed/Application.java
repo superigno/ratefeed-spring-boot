@@ -5,6 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @EnableScheduling
 @EnableRetry
 @SpringBootApplication

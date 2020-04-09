@@ -1,5 +1,6 @@
 package com.pc.globalpos.ratefeed.main;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.slf4j.Logger;
@@ -17,6 +18,11 @@ import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.service.EmailService;
 import com.pc.globalpos.ratefeed.source.RateSource;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @Component
 public class EcbRateFeed {
 
@@ -33,34 +39,37 @@ public class EcbRateFeed {
 	RateSource<Envelope> rateSource;
 
 	@Scheduled(fixedRateString = "#{@loadApplicationProperties.getRunTimeIntervalInMinute() * 60000}")
-	@Retryable(value = {
-			Exception.class }, maxAttemptsExpression = "#{@loadApplicationProperties.getRetryLimit() + 1}", backoff = @Backoff(delayExpression = "#{@loadApplicationProperties.getRetryIntervalInMinute() * 60000}"))
+	@Retryable(value = {Exception.class }, maxAttemptsExpression = "#{@loadApplicationProperties.getRetryLimit() + 1}", backoff = @Backoff(delayExpression = "#{@loadApplicationProperties.getRetryIntervalInMinute() * 60000}"))
 	public void initialize() throws Exception {
-		
 		try {
-			rateSource.getFeed(props.getSourceUrl());
-			rateSource.parse();
-			rateSource.saveToFile(Paths.get(props.getOutputDir()).resolve(props.getFilename()));
+			getFeedAndSave();
 		} catch (Exception e) {
 			logger.trace("Error in getting rate feed: ", e);
-			if (retryCtr < props.getRetryLimit()) {
-				final String msg = String.format("Unable to get rate feed. Retrying %d/%d in %d minute(s)", ++retryCtr,
-						props.getRetryLimit(), props.getRetryIntervalInMinute());
-				logger.error(msg);
-				sendEmailInNewThread(msg);
-			}
+			sendEmailOnRetry();
 			throw e;
-		}
-		
+		}		
 	}
 
 	@Recover
 	private void fallback() {
-		final String msg = String.format("Failed to get rate feed from %s after %d retries", props.getSourceUrl(),
-				props.getRetryLimit());
+		final String msg = String.format("Failed to get rate feed from %s after %d retries", props.getSourceUrl(), props.getRetryLimit());
 		logger.error(msg);
 		retryCtr = 0;
 		sendEmailInNewThread(msg);
+	}
+	
+	private void getFeedAndSave() throws IOException {
+		final Envelope feed = rateSource.getFeed(props.getSourceUrl());
+		final String strFeed = rateSource.parse(feed);
+		rateSource.saveToFile(strFeed, Paths.get(props.getOutputDir()).resolve(props.getFilename()));
+	}
+	
+	private void sendEmailOnRetry() {
+		if (retryCtr < props.getRetryLimit()) {
+			final String msg = String.format("Unable to get rate feed. Retrying %d/%d in %d minute(s)", ++retryCtr, props.getRetryLimit(), props.getRetryIntervalInMinute());
+			logger.error(msg);
+			sendEmailInNewThread(msg);
+		}
 	}
 
 	private void sendEmailInNewThread(String message) {

@@ -23,6 +23,11 @@ import com.pc.globalpos.ratefeed.model.ecb.CubeRoot;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.util.FileUtils;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @Component
 public class EcbImpl implements RateSource<Envelope> {
 	
@@ -46,7 +51,7 @@ public class EcbImpl implements RateSource<Envelope> {
 	}
 
 	@Override
-	public void parse() throws IOException {
+	public String parse(final Envelope feed) throws IOException {
 		logger.info("Parsing feed...");
 		final String baseCurrency = props.getBaseCurrency();
 		final String sourceName = props.getSourceName();
@@ -73,12 +78,12 @@ public class EcbImpl implements RateSource<Envelope> {
 			}
 		}
 
-		formattedFeed = sb.toString();
 		logger.info("Done");
+		return sb.toString();
 	}
 
 	@Override
-	public void saveToFile(final Path path) throws IOException {
+	public void saveToFile(final String strFeed, final Path path) throws IOException {
 		logger.info("Saving to file: {}", path.toString());
 		FileUtils.writeStringToFile(formattedFeed, path);
 		logger.info("Done");

@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.pc.globalpos.ratefeed.model.Email;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @Service
 public class EmailServiceImpl implements EmailService {
 

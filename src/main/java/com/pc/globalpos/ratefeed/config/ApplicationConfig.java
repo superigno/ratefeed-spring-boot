@@ -17,6 +17,11 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @Configuration
 public class ApplicationConfig {
 
@@ -35,7 +40,7 @@ public class ApplicationConfig {
 		jaxb2Marshaller.setMarshallerProperties(map);
 		return jaxb2Marshaller;
 	}
-	
+
 	@Bean
 	public ApplicationProperties loadApplicationProperties() {
 		final ApplicationProperties props = new ApplicationProperties.Builder()
@@ -46,28 +51,25 @@ public class ApplicationConfig {
 				.setOutputDir(env.getRequiredProperty("ratefeed.dir.output"))
 				.setSourceName(env.getRequiredProperty("ratefeed.source.name"))
 				.setSourceType(env.getRequiredProperty("ratefeed.source.type"))
-				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url"))
-				.setFilename(getFilename())
-				.setRunTimeIntervalInMinute(env.getRequiredProperty("ratefeed.config.runtime.intervalinminute", Integer.class))
+				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url")).setFilename(getFilename())
+				.setRunTimeIntervalInMinute(
+						env.getRequiredProperty("ratefeed.config.runtime.intervalinminute", Integer.class))
 				.setRetryLimit(env.getRequiredProperty("ratefeed.config.retry.limit", Integer.class))
-				.setRetryIntervalInMinute(env.getRequiredProperty("ratefeed.config.retry.intervalinminute", Integer.class))
-				.setBaseCurrency(env.getRequiredProperty("ratefeed.currency.basecurrency"))
-				.build();
-		
+				.setRetryIntervalInMinute(
+						env.getRequiredProperty("ratefeed.config.retry.intervalinminute", Integer.class))
+				.setBaseCurrency(env.getRequiredProperty("ratefeed.currency.basecurrency")).build();
+
 		return props;
 	}
 
 	private String getFilename() {
-		final String filename = env.getRequiredProperty("ratefeed.format.filename");
-		final String filenameDateFormat = env.getRequiredProperty("ratefeed.format.filename.date");
-		String strDate = null;
+		String filename = env.getRequiredProperty("ratefeed.format.filename");
 		try {
-			final SimpleDateFormat sdf = new SimpleDateFormat(filenameDateFormat);
-			strDate = sdf.format(new Date());
+			final SimpleDateFormat sdf = new SimpleDateFormat(filename);
+			filename = sdf.format(new Date());
 		} catch (Exception e) {
-			logger.debug("Invalid date format: {}", filenameDateFormat);
-			return filename;
+			logger.debug("Invalid filename date format: {}", filename);			
 		}
-		return filename.replace(filenameDateFormat, strDate);
+		return filename;
 	}
 }

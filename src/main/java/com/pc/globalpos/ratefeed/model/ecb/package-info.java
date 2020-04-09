@@ -5,3 +5,9 @@ package com.pc.globalpos.ratefeed.model.ecb;
 
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlSchema;
+
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */

@@ -1,9 +1,12 @@
 package com.pc.globalpos.ratefeed.ecb;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pc.globalpos.ratefeed.core.XmlConverter;
@@ -21,18 +26,28 @@ import com.pc.globalpos.ratefeed.model.ecb.CubeDetail;
 import com.pc.globalpos.ratefeed.model.ecb.CubeRoot;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.model.ecb.Sender;
+import com.pc.globalpos.ratefeed.source.EcbImpl;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("dev")
 public class XmlConverterTest {
 
-	private static final String XML_FILE = Paths.get("C:","ratefeed","ecb.xml").toString();
+	private static final Path XML_FILE = Paths.get("C:","ratefeed", "output", "test.xml");
 	
 	@Autowired
 	private XmlConverter converter;
 	
 	@Autowired
 	private ApplicationProperties props;
+	
+	@MockBean
+	private EcbImpl ecbImpl;
 
     @Test
 	public void testMarshall() throws IOException {
@@ -58,10 +73,12 @@ public class XmlConverterTest {
 		root.setCubeBranchList(branchList);
 		envelope.setCubeRoot(root);
 
-		converter.convertFromObjectToXml(envelope, XML_FILE);
+		converter.convertFromObjectToXml(envelope, XML_FILE.toString());
+		
+		assertTrue(Files.exists(XML_FILE));
 	}
 
-    //@Test
+    @Test
 	public void testUnmarshall() throws IOException {
 
 		Envelope envelope = (Envelope) converter.convertFromXmlToObject(props.getSourceUrl());

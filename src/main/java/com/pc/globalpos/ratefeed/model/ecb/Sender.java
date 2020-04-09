@@ -5,6 +5,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @XmlRootElement(name="Sender")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Sender {

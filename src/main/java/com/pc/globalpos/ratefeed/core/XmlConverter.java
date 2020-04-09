@@ -15,6 +15,11 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author gino.q
+ * @date April 8, 2020
+ *
+ */
 @Component
 public class XmlConverter {
 
