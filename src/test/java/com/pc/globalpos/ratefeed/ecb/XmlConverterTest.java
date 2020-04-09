@@ -20,13 +20,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.pc.globalpos.ratefeed.core.XmlConverter;
+import com.pc.globalpos.ratefeed.main.EcbRateFeed;
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 import com.pc.globalpos.ratefeed.model.ecb.CubeBranch;
 import com.pc.globalpos.ratefeed.model.ecb.CubeDetail;
 import com.pc.globalpos.ratefeed.model.ecb.CubeRoot;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.model.ecb.Sender;
-import com.pc.globalpos.ratefeed.source.EcbImpl;
 
 /**
  * @author gino.q
@@ -47,7 +47,7 @@ public class XmlConverterTest {
 	private ApplicationProperties props;
 	
 	@MockBean
-	private EcbImpl ecbImpl;
+	private EcbRateFeed ecbRateFeed;
 
     @Test
 	public void testMarshall() throws IOException {

@@ -8,9 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.pc.globalpos.ratefeed.main.EcbRateFeed;
 import com.pc.globalpos.ratefeed.model.Email;
 import com.pc.globalpos.ratefeed.service.EmailService;
-import com.pc.globalpos.ratefeed.source.EcbImpl;
 
 /**
  * @author gino.q
@@ -26,7 +26,7 @@ public class EmailTest {
 	private EmailService emailService;
 	
 	@MockBean
-	private EcbImpl ecbImpl;
+	private EcbRateFeed ecbRateFeed;
 
 	@Test
 	public void sendEmail() {
