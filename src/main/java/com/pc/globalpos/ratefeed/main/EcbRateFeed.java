@@ -67,8 +67,9 @@ public class EcbRateFeed {
 
 	private void saveToOutputDirectories(final String strFeed) throws IOException {
 		final String[] outputDirs = props.getOutputDirs();	
+		final String filename = ApplicationConfig.getFilename(props.getFilenameFormat());
 		for (String outputDir : outputDirs) {
-			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(ApplicationConfig.getFilename(props.getFilenameFormat())));			
+			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(filename));			
 		}
 	}
 	
