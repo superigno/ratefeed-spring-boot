@@ -12,7 +12,7 @@ public final class ApplicationProperties {
 	private final String mailSubject;
 
 	private final String baseDir;
-	private final String outputDir;
+	private final String[] outputDirs;
 
 	private final String sourceName;
 	private final String sourceUrl;
@@ -27,14 +27,14 @@ public final class ApplicationProperties {
 
 	private final String baseCurrency;
 
-	private ApplicationProperties(String mailFrom, String mailTo, String mailSubject, String baseDir, String outputDir, String sourceName,
+	private ApplicationProperties(String mailFrom, String mailTo, String mailSubject, String baseDir, String[] outputDirs, String sourceName,
 			String sourceUrl, String sourceType, String filename, int runTimeIntervalInMinute,
 			int retryLimit, int retryIntervalInMinute, String baseCurrency) {
 		this.mailFrom = mailFrom;
 		this.mailTo = mailTo;
 		this.mailSubject = mailSubject;
 		this.baseDir = baseDir;
-		this.outputDir = outputDir;
+		this.outputDirs = outputDirs;
 		this.sourceName = sourceName;
 		this.sourceUrl = sourceUrl;
 		this.sourceType = sourceType;
@@ -61,8 +61,8 @@ public final class ApplicationProperties {
 		return baseDir;
 	}
 
-	public String getOutputDir() {
-		return outputDir;
+	public String[] getOutputDirs() {
+		return outputDirs;
 	}
 
 	public String getSourceName() {
@@ -103,7 +103,7 @@ public final class ApplicationProperties {
 		private String mailSubject;
 
 		private String baseDir;
-		private String outputDir;
+		private String[] outputDirs;
 
 		private String sourceName;
 		private String sourceUrl;
@@ -138,8 +138,8 @@ public final class ApplicationProperties {
 			return this;
 		}
 
-		public Builder setOutputDir(String outputDir) {
-			this.outputDir = outputDir;
+		public Builder setOutputDirs(String[] outputDirs) {
+			this.outputDirs = outputDirs;
 			return this;
 		}
 
@@ -184,7 +184,7 @@ public final class ApplicationProperties {
 		}
 
 		public ApplicationProperties build() {
-			return new ApplicationProperties(mailFrom, mailTo, mailSubject, baseDir, outputDir, sourceName, sourceUrl, sourceType,
+			return new ApplicationProperties(mailFrom, mailTo, mailSubject, baseDir, outputDirs, sourceName, sourceUrl, sourceType,
 					filename, runTimeIntervalInMinute, retryLimit, retryIntervalInMinute, baseCurrency);
 		}
 

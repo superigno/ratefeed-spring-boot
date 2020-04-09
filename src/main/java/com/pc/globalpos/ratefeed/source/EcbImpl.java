@@ -42,49 +42,64 @@ public class EcbImpl implements RateSource<Envelope> {
 	
 	@Override
 	public Envelope getFeed(final String url) throws IOException {
-		logger.info("Retrieving feed from: {}", url);
-		final Envelope feed = (Envelope) converter.convertFromXmlToObject(url);
-		logger.info("Done");
-		return feed;
+		try {
+			logger.info("Retrieving feed from: {}", url);
+			final Envelope feed = (Envelope) converter.convertFromXmlToObject(url);
+			logger.info("Done");
+			return feed;			
+		} catch (IOException e) {
+			logger.trace("Get feed error: ", e);
+			throw new IOException("Unable to gate rate feed from: "+url);
+		}		
 	}
 
 	@Override
 	public String parse(final Envelope feed) throws IOException {
-		logger.info("Parsing feed...");
-		final String baseCurrency = props.getBaseCurrency();
-		final String sourceName = props.getSourceName();
-		final String sourceType = props.getSourceType();
-		final String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		final StringBuilder sb = new StringBuilder();
-		final BigDecimal dividend = new BigDecimal("1");
-		final MathContext precision = new MathContext(8, RoundingMode.DOWN);
-		
-		sb.append(sourceName);
-		sb.append(System.lineSeparator());
-		sb.append(sourceType);
-		
-		final CubeRoot root = (CubeRoot) feed.getCubeRoot();
-		final List<CubeBranch> branchList = root.getCubeBranchList();
-		for (CubeBranch branch : branchList) {
-			final List<CubeDetail> detailList = branch.getDetailList();
-			for (CubeDetail detail : detailList) {				
-				final BigDecimal rate = detail.getRate();				
-				final BigDecimal divRate = dividend.divide(rate, precision);				
-				final String[] details = {baseCurrency, detail.getCurrency(), rate.toString(), divRate.toString(), dateTime};
-				sb.append(System.lineSeparator());
-				sb.append(StringUtils.arrayToCommaDelimitedString(details));
+		try {
+			logger.info("Parsing feed...");
+			final String baseCurrency = props.getBaseCurrency();
+			final String sourceName = props.getSourceName();
+			final String sourceType = props.getSourceType();
+			final String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+			final StringBuilder sb = new StringBuilder();
+			final BigDecimal dividend = new BigDecimal("1");
+			final MathContext precision = new MathContext(8, RoundingMode.DOWN);
+			
+			sb.append(sourceName);
+			sb.append(System.lineSeparator());
+			sb.append(sourceType);
+			
+			final CubeRoot root = (CubeRoot) feed.getCubeRoot();
+			final List<CubeBranch> branchList = root.getCubeBranchList();
+			for (CubeBranch branch : branchList) {
+				final List<CubeDetail> detailList = branch.getDetailList();
+				for (CubeDetail detail : detailList) {				
+					final BigDecimal rate = detail.getRate();				
+					final BigDecimal divRate = dividend.divide(rate, precision);				
+					final String[] details = {baseCurrency, detail.getCurrency(), rate.toString(), divRate.toString(), dateTime};
+					sb.append(System.lineSeparator());
+					sb.append(StringUtils.arrayToCommaDelimitedString(details));
+				}
 			}
+			
+			logger.info("Done");
+			return sb.toString();
+		} catch (Exception e) {
+			logger.trace("Parse feed error: ", e);
+			throw new IOException("Unable to parse feed");
 		}
-
-		logger.info("Done");
-		return sb.toString();
 	}
 
 	@Override
 	public void saveToFile(final String strFeed, final Path path) throws IOException {
-		logger.info("Saving to file: {}", path.toString());
-		FileUtils.writeStringToFile(strFeed, path);
-		logger.info("Done");
+		try {
+			logger.info("Saving to file: {}", path.toString());
+			FileUtils.writeStringToFile(strFeed, path);
+			logger.info("Done");
+		} catch (IOException e) {
+			logger.trace("Save to file error: ", e);
+			throw new IOException("Unable to save to file: "+path.toString());
+		}
 	}
 
 }

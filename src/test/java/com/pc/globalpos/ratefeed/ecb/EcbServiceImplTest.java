@@ -14,9 +14,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.pc.globalpos.ratefeed.main.EcbRateFeed;
 import com.pc.globalpos.ratefeed.model.ApplicationProperties;
 import com.pc.globalpos.ratefeed.model.ecb.Envelope;
 import com.pc.globalpos.ratefeed.source.RateSource;
@@ -37,6 +39,9 @@ public class EcbServiceImplTest {
 	@Autowired
 	private RateSource<Envelope> rateSource;
 	
+	@MockBean
+	private EcbRateFeed ecbRateFeed;
+	
 	@Test
 	public void testGetFeed() throws IOException {
 		Envelope envelope = (Envelope) rateSource.getFeed(props.getSourceUrl());
@@ -49,7 +54,11 @@ public class EcbServiceImplTest {
 	public void testSaveFeed() throws IOException {
 		Envelope feed = rateSource.getFeed(props.getSourceUrl());
 		String strFeed = rateSource.parse(feed);
-		rateSource.saveToFile(strFeed, Paths.get(props.getOutputDir(), props.getFilename()));
+		String[] outputDirs = props.getOutputDirs();	
+		for (String outputDir : outputDirs) {
+			System.out.println(outputDir.trim());
+			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(props.getFilename()));
+		}
 	}
 	
 	@Test

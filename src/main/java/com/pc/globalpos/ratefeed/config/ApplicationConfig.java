@@ -48,7 +48,7 @@ public class ApplicationConfig {
 				.setMailTo(env.getRequiredProperty("ratefeed.mail.to"))
 				.setMailSubject(env.getRequiredProperty("ratefeed.mail.subject"))
 				.setBaseDir(env.getRequiredProperty("ratefeed.dir.base"))
-				.setOutputDir(env.getRequiredProperty("ratefeed.dir.output"))
+				.setOutputDirs(env.getRequiredProperty("ratefeed.dir.output").split(","))
 				.setSourceName(env.getRequiredProperty("ratefeed.source.name"))
 				.setSourceType(env.getRequiredProperty("ratefeed.source.type"))
 				.setSourceUrl(env.getRequiredProperty("ratefeed.source.url")).setFilename(getFilename())

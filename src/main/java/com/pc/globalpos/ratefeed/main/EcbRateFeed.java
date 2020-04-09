@@ -42,31 +42,38 @@ public class EcbRateFeed {
 	@Retryable(value = {Exception.class }, maxAttemptsExpression = "#{@loadApplicationProperties.getRetryLimit() + 1}", backoff = @Backoff(delayExpression = "#{@loadApplicationProperties.getRetryIntervalInMinute() * 60000}"))
 	public void initialize() throws Exception {
 		try {
-			getFeedAndSave();
+			getFeedParseAndSave();
 		} catch (Exception e) {
-			logger.trace("Error in getting rate feed: ", e);
-			sendEmailOnRetry();
+			logger.trace("Rate feed error: ", e);
+			sendEmailOnRetry(e.getMessage());
 			throw e;
 		}		
 	}
 
 	@Recover
 	private void fallback() {
-		final String msg = String.format("Failed to get rate feed from %s after %d retries", props.getSourceUrl(), props.getRetryLimit());
+		final String msg = String.format("Failed to completely process rate feed from %s after %d retries. See full logs for details.", props.getSourceUrl(), props.getRetryLimit());
 		logger.error(msg);
 		retryCtr = 0;
 		sendEmailInNewThread(msg);
 	}
 	
-	private void getFeedAndSave() throws IOException {
+	private void getFeedParseAndSave() throws IOException {
 		final Envelope feed = rateSource.getFeed(props.getSourceUrl());
-		final String strFeed = rateSource.parse(feed);
-		rateSource.saveToFile(strFeed, Paths.get(props.getOutputDir()).resolve(props.getFilename()));
+		final String strFeed = rateSource.parse(feed);		
+		saveToOutputDirectories(strFeed);
+	}
+
+	private void saveToOutputDirectories(final String strFeed) throws IOException {
+		final String[] outputDirs = props.getOutputDirs();	
+		for (String outputDir : outputDirs) {
+			rateSource.saveToFile(strFeed, Paths.get(outputDir.trim()).resolve(props.getFilename()));			
+		}
 	}
 	
-	private void sendEmailOnRetry() {
+	private void sendEmailOnRetry(String message) {
 		if (retryCtr < props.getRetryLimit()) {
-			final String msg = String.format("Unable to get rate feed. Retrying %d/%d in %d minute(s)", ++retryCtr, props.getRetryLimit(), props.getRetryIntervalInMinute());
+			final String msg = String.format("%s. Retrying %d/%d in %d minute(s)", message, ++retryCtr, props.getRetryLimit(), props.getRetryIntervalInMinute());
 			logger.error(msg);
 			sendEmailInNewThread(msg);
 		}
