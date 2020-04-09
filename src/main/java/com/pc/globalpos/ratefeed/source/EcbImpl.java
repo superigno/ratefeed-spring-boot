@@ -32,8 +32,6 @@ import com.pc.globalpos.ratefeed.util.FileUtils;
 public class EcbImpl implements RateSource<Envelope> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EcbImpl.class);
-	private Envelope feed;	
-	private String formattedFeed;
 	
 	@Autowired
 	private XmlConverter converter;
@@ -45,7 +43,7 @@ public class EcbImpl implements RateSource<Envelope> {
 	@Override
 	public Envelope getFeed(final String url) throws IOException {
 		logger.info("Retrieving feed from: {}", url);
-		feed = (Envelope) converter.convertFromXmlToObject(url);
+		final Envelope feed = (Envelope) converter.convertFromXmlToObject(url);
 		logger.info("Done");
 		return feed;
 	}
@@ -85,7 +83,7 @@ public class EcbImpl implements RateSource<Envelope> {
 	@Override
 	public void saveToFile(final String strFeed, final Path path) throws IOException {
 		logger.info("Saving to file: {}", path.toString());
-		FileUtils.writeStringToFile(formattedFeed, path);
+		FileUtils.writeStringToFile(strFeed, path);
 		logger.info("Done");
 	}
 
