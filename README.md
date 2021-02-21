@@ -1,1 +1,1 @@
-# ratefeed-spring-boot
+# spring-boot
